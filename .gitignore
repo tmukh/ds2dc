@@ -7,6 +7,8 @@ __pycache__/
 /data/
 /csvs/
 /.vscode/
+/graph files/
+/keyValue Files/
 # C extensions
 *.so
 

@@ -4,6 +4,8 @@ from generateImage import generate_dockerfile
 
 def traverseSameDataModel(exts, file_paths, model):
     root_folder = os.getcwd()  # Get the root folder path
+
+    #NOTE: using os.walk here because it handles recursively checking all the subdirectories
     for root, dirs, files in os.walk(root_folder):
         for file in files:
             if any(file.endswith(ext) for ext in exts):
