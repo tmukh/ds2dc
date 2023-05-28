@@ -30,26 +30,24 @@ if __name__ == "__main__":
             exts = [".csv", ".xlsx", ".xls", ".tsv",
                    ".parquet", ".feather", ".sqlite", ".db"]
             paths = scanFilefolder.traverseSameDataModel(exts,[],model)
-            generateImage.generate_dockerfile(paths)
-            convert.convert_files(paths,'tabular',exts)
+            converted_paths = convert.convert_files(paths,'tabular',exts)
+            generateImage.generate_dockerfile(converted_paths,'tabular')
 
         elif model == "graph":
             exts = [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"]
             paths = scanFilefolder.traverseSameDataModel(exts,[],model)
-            generateImage.generate_dockerfile(paths)
-            convert.convert_files(paths,'graph',exts)
+            converted_paths = convert.convert_files(paths,'graph',exts)
+            generateImage.generate_dockerfile(converted_paths,'graph')
+
+
 
         elif model == "keyvalue":
             exts = [".json", ".yaml", ".xml", ".properties"]
             paths = scanFilefolder.traverseSameDataModel(exts,[],model)
-            generateImage.generate_dockerfile(paths)
-            convert.convert_files(paths,'keyvalue',exts)
+            converted_paths = convert.convert_files(paths,'keyvalue',exts)
+            generateImage.generate_dockerfile(converted_paths,'keyvalue')
 
-        elif model == "nosql":
-            exts = [".json", ".bson", ".yaml", ".xml"]
-            paths = scanFilefolder.traverseSameDataModel(exts,[],model)
-            generateImage.generate_dockerfile(paths)
-            convert.convert_files(paths,'nosql',exts)
+
 
         else:
             print("Invalid Data Model. Available options for same-datamodel are: tabular, graph, keyvalue, nosql")

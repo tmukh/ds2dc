@@ -1,28 +1,54 @@
-def generate_dockerfile(files):
+import os 
+file_arr = []
+def generate_dockerfile(files, cmd_option):
     # Create the Dockerfile content
-    dockerfile_content = f'''\
-    FROM python:3.11
+    dockerfile_content = '''\
+FROM python:3.11
 
-    WORKDIR /
-    '''
+WORKDIR /
+'''
 
-    docker_files=""
-    for x in files:
-        docker_files += (f"COPY {x} /{x}") + "\n\t"
+    docker_files = ""
 
-   
+    if cmd_option == "graph":
+        graph_dir = "/graphs/"
+        for path in files:
+            filename = os.path.basename(path)
+            docker_files += f"COPY {path} {graph_dir}{filename}\n\t"
+    elif cmd_option == "tabular":
+        csv_dir = "/csvs/"
+        for path in files:
+            filename = os.path.basename(path)
+            docker_files += f"COPY {path} {csv_dir}{filename}\n\t"
+    elif cmd_option == "keyvalue":
+        kv_dir = "/keyValue files/"
+        for path in files:
+            filename = os.path.basename(path)
+            docker_files += f"COPY {path} {kv_dir}{filename}\n\t"
+    else:
+        raise ValueError("Invalid cmd_option. Expected 'graph', 'tabular', or 'keyvalue'.")
+
+    cmd_option = cmd_option.lower()
+
+    if cmd_option == "graph":
+        cmd = 'CMD [ "python", "/files/convert.py", "same-datamodel", "graph" ]'
+    elif cmd_option == "tabular":
+        cmd = 'CMD [ "python", "/files/convert.py", "same-datamodel" , "tabular"]'
+    elif cmd_option == "keyvalue":
+        cmd = 'CMD [ "python", "/files/convert.py", "same-datamodel", "keyvalue" ]'
+    else:
+        raise ValueError("Invalid cmd_option. Expected 'graph', 'same-datamodel', or 'keyvalue'.")
 
     rest = '''
-    COPY convert.py /files/convert.py
-    COPY requirements.txt /files/requirements.txt
-    RUN pip install --no-cache-dir -r /files/requirements.txt
+COPY requirements.txt /files/requirements.txt
+RUN pip install --no-cache-dir -r /files/requirements.txt
 
-
-    CMD [ "python", "/files/convert.py" ]
-    '''
+'''
+    
     finalstr = dockerfile_content + docker_files + rest
-    print(finalstr)
+    finalstr += 'COPY smartconv/*.py /files/\n\t'
+    finalstr += cmd
+
     # Write the content to a Dockerfile
     with open('Dockerfile', 'w') as dockerfile:
         dockerfile.write(finalstr)
-

@@ -1,0 +1,16 @@
+{
+  "employees": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "department": "Engineering",
+      "skills": ["Python", "JavaScript"]
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "department": "Marketing",
+      "skills": ["Copywriting", "Social Media"]
+    }
+  ]
+}
