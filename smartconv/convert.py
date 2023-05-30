@@ -40,6 +40,43 @@ def convert_files(paths, extension_type, extension_list):
     print(converted_paths)
     return converted_paths
 
+def get_extension(file_path):
+    # Extract the extension from the file path
+    parts = file_path.split('.')
+    if len(parts) > 1:
+        return '.' + parts[-1]
+    else:
+        return ''
+def convert_strings_to_paths(file_paths):
+    os_paths = []
+    for file_path in file_paths:
+        os_path = os.path.normpath(file_path)
+        os_paths.append(os_path)
+    return file_paths
+def convert_files_by_extension(file_paths):
+
+    file_paths = convert_strings_to_paths(file_paths)
+    converted_paths = []
+
+    for file_path in file_paths:
+        extension = get_extension(file_path)
+        exts_tabular = [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"]
+        exts_graph = [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"]
+        exts_keyvalue = [".json", ".yaml", ".xml", ".properties"]   
+        if extension.lower() in exts_tabular:
+            convert_to_csv(file_path)
+            converted_paths.append(file_path)
+        elif extension.lower() in exts_graph:
+            convert_to_graphml(file_path)
+            converted_paths.append(file_path)
+        elif extension.lower() in exts_keyvalue:
+            convert_to_json(file_path)
+            converted_paths.append(file_path)
+        else:
+            print(f"Unsupported extension: {extension}")
+
+    return converted_paths
+
 
 def modify_extension(file_path, new_extension):
     filename, _ = os.path.splitext(file_path)
