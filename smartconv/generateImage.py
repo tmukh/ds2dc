@@ -1,9 +1,6 @@
 import os
 
-file_arr = []
-exts_tabular = [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"]
-exts_graph = [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"]
-exts_keyvalue = [".json", ".yaml", ".xml", ".properties"]
+
 def get_extension(file_path):
     # Extract the extension from the file path
     parts = file_path.split('.')
@@ -12,74 +9,83 @@ def get_extension(file_path):
     else:
         return ''
 
+
 def generate_dockerfile(files, cmd_option):
-    # Create the Dockerfile content
-    dockerfile_content = '''\
-FROM python:3.11
+    exts_tabular = [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"]
+    exts_graph = [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"]
+    exts_keyvalue = [".json", ".yaml", ".xml", ".properties"]
 
-WORKDIR /
-'''
+    dockerfiles = []
+    
+    def graph_tool(cmd_option):
+        # Add setup for graph tools, like Neo4j server
+        return f"RUN setup_neo4j\n\n"
+    
+    def tabular_tool(cmd_option):
+        # Add setup for tabular tools, like PostgreSQL server
+        return f"FROM postgres:latest\nEXPOSE 5432\n\n"
+    
+    def keyvalue_tool(cmd_option):
+        # Add setup for key-value tools, like Redis server
+        return f"RUN setup_redis\n\n"
+    
+    def multimodel_tool(cmd_option):
+        # Add setup for multimodel tools, if needed
+        return ""
+    
+    def get_dockerfile_header(cmd_option):
+        # Get the appropriate tool setup based on cmd_option
+        if cmd_option == "graph":
+            return graph_tool(cmd_option)
+        elif cmd_option == "tabular":
+            return tabular_tool(cmd_option)
+        elif cmd_option == "keyvalue":
+            return keyvalue_tool(cmd_option)
+        elif cmd_option == "multimodel":
+            return multimodel_tool(cmd_option)
+        else:
+            raise ValueError("Invalid cmd_option. Expected 'graph', 'tabular', 'keyvalue', or 'multimodel'.")
+    def create_docker_file_based_on_cmd(cmd_option):
+        if cmd_option == "graph":
+            graph_dir = "/graphs/"
+            dockerfile = f"{dockerfile_header}COPY {graph_dir} {graph_dir}\n"
+            dockerfiles.append(dockerfile)
+        elif cmd_option == "tabular":
+            csv_dir = "/csvs/"
+            dockerfile = f"{dockerfile_header}COPY {csv_dir} {csv_dir}\nCOPY populate_csvs.sh .\n RUN populate_csvs.sh"
+            dockerfiles.append(dockerfile)
+        elif cmd_option == "keyvalue":
+            kv_dir = "/keyValue files/"
+            dockerfile = f"{dockerfile_header}COPY {kv_dir} {kv_dir}\n"
+            dockerfiles.append(dockerfile)
+   
+    dockerfile_header = get_dockerfile_header(cmd_option)
+    
+    if cmd_option == "multimodel":
+        graph_files = [path for path in files if get_extension(path).lower() in exts_graph]
+        csv_files = [path for path in files if get_extension(path).lower() in exts_tabular]
+        kv_files = [path for path in files if get_extension(path).lower() in exts_keyvalue]
 
-    docker_files = ""
+        if graph_files:
+            dockerfile_header = get_dockerfile_header("graph")
+            create_docker_file_based_on_cmd("graph")
 
-    if cmd_option == "graph":
-        graph_dir = "/graphs/"
-        for path in files:
-            filename = os.path.basename(path)
-            docker_files += f"COPY {path} {graph_dir}{filename}\n\t"
-    elif cmd_option == "tabular":
-        csv_dir = "/csvs/"
-        for path in files:
-            filename = os.path.basename(path)
-            docker_files += f"COPY {path} {csv_dir}{filename}\n\t"
-    elif cmd_option == "keyvalue":
-        kv_dir = "/keyValue files/"
-        for path in files:
-            filename = os.path.basename(path)
-            docker_files += f"COPY {path} {kv_dir}{filename}\n\t"
-    elif cmd_option == "multimodel":
-        for path in files:
-            extension = get_extension(path)
-            if extension.lower() in exts_graph:
-                graph_dir = "/graphs/"
-                filename = os.path.basename(path)
-                docker_files += f"COPY {path} {graph_dir}{filename}\n\t"
-            elif extension.lower() in exts_tabular:
-                csv_dir = "/csvs/"
-                filename = os.path.basename(path)
-                docker_files += f"COPY {path} {csv_dir}{filename}\n\t"
-            elif extension.lower() in exts_keyvalue:
-                kv_dir = "/keyValue files/"
-                filename = os.path.basename(path)
-                docker_files += f"COPY {path} {kv_dir}{filename}\n\t"
-            else:
-                print(f"Unsupported file extension: {extension}")
+        if csv_files:
+            dockerfile_header = get_dockerfile_header("tabular")
+            create_docker_file_based_on_cmd("tabular")
+        if kv_files:
+            dockerfile_header = get_dockerfile_header("keyvalue")
+            create_docker_file_based_on_cmd("keyvalue")
+    elif cmd_option in ['tabular','graph','keyvalue']:
+        get_dockerfile_header(cmd_option)
+        create_docker_file_based_on_cmd(cmd_option)
     else:
         raise ValueError("Invalid cmd_option. Expected 'graph', 'tabular', 'keyvalue', or 'multimodel'.")
+    
+    return dockerfiles
 
-    cmd_option = cmd_option.lower()
-
-    if cmd_option == "graph":
-        cmd = 'CMD [ "python", "/files/convert.py", "same-datamodel", "graph" ]'
-    elif cmd_option == "tabular":
-        cmd = 'CMD [ "python", "/files/convert.py", "same-datamodel" , "tabular"]'
-    elif cmd_option == "keyvalue":
-        cmd = 'CMD [ "python", "/files/convert.py", "same-datamodel", "keyvalue" ]'
-    elif cmd_option == "multimodel":
-        cmd = 'CMD [ "python", "/files/convert.py", "multimodel" ]'
-    else:
-        raise ValueError("Invalid cmd_option. Expected 'graph', 'tabular', 'keyvalue', or 'multimodel'.")
-
-    rest = '''
-COPY requirements.txt /files/requirements.txt
-RUN pip install --no-cache-dir -r /files/requirements.txt
-
-'''
-
-    finalstr = dockerfile_content + docker_files + rest
-    finalstr += 'COPY smartconv/*.py /files/\n\t'
-    finalstr += cmd
-
-    # Write the content to a Dockerfile
-    with open('Dockerfile', 'w') as dockerfile:
-        dockerfile.write(finalstr)
+def write_dockerfiles(dockerfiles):
+    for i, dockerfile in enumerate(dockerfiles):
+        with open(f"Dockerfile{i+1}.dockerfile", "w") as file:
+            file.write(dockerfile)
+        print(f"Dockerfile{i+1} generated successfully.")

@@ -9,6 +9,7 @@ __pycache__/
 /.vscode/
 /graphs/
 /keyValue Files/
+/random/
 # C extensions
 *.so
 

@@ -15,7 +15,7 @@ def convert_files(paths, extension_type, extension_list):
     elif extension_type == 'keyvalue':
         output_extension = '.json'
     
-    converted_paths = []
+
 
     for path in paths:
         if os.path.isdir(path):
@@ -24,21 +24,14 @@ def convert_files(paths, extension_type, extension_list):
                     file_extension = os.path.splitext(file)[-1]
                     if file_extension in target_extensions:
                         input_file = os.path.join(root, file)
-                        converted_file = modify_extension(input_file, output_extension)
-                        converted_paths.append(converted_file)
                         convert_file(input_file, extension_type)
         elif os.path.isfile(path):
             file_extension = os.path.splitext(path)[-1]
             if file_extension in target_extensions:
                 input_file = path
-                converted_file = modify_extension(input_file, output_extension)
-                converted_paths.append(converted_file)
                 convert_file(input_file, extension_type)
         else:
             print(f"Invalid path: {path}")
-
-    print(converted_paths)
-    return converted_paths
 
 def get_extension(file_path):
     # Extract the extension from the file path

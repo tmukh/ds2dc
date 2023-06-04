@@ -13,14 +13,14 @@ if __name__ == "__main__":
                 exts_keyvalue = [".json", ".yaml", ".xml", ".properties"]
                 
                 tabular_paths = scanFilefolder.traverseMultiDataModels(exts_tabular)[0]
-                print(tabular_paths)
                 graph_paths = scanFilefolder.traverseMultiDataModels(exts_graph)[1]
                 keyvalue_paths = scanFilefolder.traverseMultiDataModels(exts_keyvalue)[2]
                 all_paths  = [item for sublist in [tabular_paths, graph_paths, keyvalue_paths] for item in sublist]
                 if len(all_paths) > 0:
                     # Process all paths together
                     converted_paths = convert.convert_files_by_extension(all_paths)
-                    generateImage.generate_dockerfile(converted_paths, "multimodel")
+                    dockerfiles = generateImage.generate_dockerfile(converted_paths, "multimodel")
+                    generateImage.write_dockerfiles(dockerfiles)
             elif sys.argv[1].lower() == "domain-specific":
                 # Handle domain-specific data model case
                 pass
@@ -42,8 +42,9 @@ if __name__ == "__main__":
                 print("Invalid Data Model. Available options for same-datamodel are: tabular, graph, keyvalue")
                 sys.exit(1)
             paths = scanFilefolder.traverseSameDataModel(exts)
-            converted_paths = convert.convert_files(paths, model, exts)
-            generateImage.generate_dockerfile(converted_paths, model)
+            convert.convert_files(paths, model, exts)
+            dockerfiles = generateImage.generate_dockerfile(paths, model)
+            generateImage.write_dockerfiles(dockerfiles)
 
         else:
             print(
