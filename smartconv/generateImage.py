@@ -9,7 +9,12 @@ def get_extension(file_path):
     else:
         return ''
 
-
+def write_dockerfiles(dockerfiles):
+    for i, dockerfile in enumerate(dockerfiles):
+        with open(f"Dockerfile{i+1}.dockerfile", "w") as file:
+            file.write(dockerfile)
+        print(f"Dockerfile{i+1} generated successfully.")
+        
 def generate_dockerfile(files, cmd_option):
     exts_tabular = [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"]
     exts_graph = [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"]
@@ -23,7 +28,7 @@ def generate_dockerfile(files, cmd_option):
     
     def tabular_tool(cmd_option):
         # Add setup for tabular tools, like PostgreSQL server
-        return f"FROM postgres:latest\nEXPOSE 5432\n\n"
+        return f"FROM postgres:latest\n\n"
     
     def keyvalue_tool(cmd_option):
         # Add setup for key-value tools, like Redis server
@@ -50,15 +55,30 @@ def generate_dockerfile(files, cmd_option):
             graph_dir = "/graphs/"
             dockerfile = f"{dockerfile_header}COPY {graph_dir} {graph_dir}\n"
             dockerfiles.append(dockerfile)
+        
         elif cmd_option == "tabular":
             csv_dir = "/csvs/"
-            dockerfile = f"{dockerfile_header}COPY {csv_dir} {csv_dir}\nCOPY populate_csvs.sh .\n RUN populate_csvs.sh"
+            dockerfile = f"""   {dockerfile_header}COPY {csv_dir} {csv_dir}\n 
+ENV POSTGRES_USER=postgres\n
+ENV POSTGRES_PASSWORD=postgres\n
+ENV POSTGRES_DB=postgres\n
+COPY import_data.sh /docker-entrypoint-initdb.d/import_data.sh\n
+RUN chmod +x /docker-entrypoint-initdb.d/import_data.sh\n
+EXPOSE 5432 \n
+VOLUME /var/lib/postgresql/data\n
+CMD ["bash", "-c", "docker-entrypoint.sh postgres"]"""
             dockerfiles.append(dockerfile)
+        
         elif cmd_option == "keyvalue":
             kv_dir = "/keyValue files/"
             dockerfile = f"{dockerfile_header}COPY {kv_dir} {kv_dir}\n"
             dockerfiles.append(dockerfile)
    
+    
+    
+    
+    
+    
     dockerfile_header = get_dockerfile_header(cmd_option)
     
     if cmd_option == "multimodel":
@@ -84,8 +104,3 @@ def generate_dockerfile(files, cmd_option):
     
     return dockerfiles
 
-def write_dockerfiles(dockerfiles):
-    for i, dockerfile in enumerate(dockerfiles):
-        with open(f"Dockerfile{i+1}.dockerfile", "w") as file:
-            file.write(dockerfile)
-        print(f"Dockerfile{i+1} generated successfully.")
