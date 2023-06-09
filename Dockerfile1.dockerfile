@@ -1,5 +1,4 @@
-FROM postgres:latest
-EXPOSE 5432
+   FROM postgres:latest
 
 COPY /csvs/ /csvs/
  
@@ -15,14 +14,6 @@ RUN chmod +x /docker-entrypoint-initdb.d/import_data.sh
 
 EXPOSE 5432 
 
-# Check if the data directory is empty
-RUN [ -z "$(ls -A /var/lib/postgresql/data)" ] && touch /firstrun
+VOLUME /var/lib/postgresql/data
 
-# Start the PostgreSQL server and execute import_data.sh if it is the first run
-CMD if [ -e /firstrun ]; then \
-        rm /firstrun && \
-        docker-entrypoint.sh postgres && \
-        bash -c '/docker-entrypoint-initdb.d/import_data.sh'; \
-    else \
-        docker-entrypoint.sh postgres; \
-    fi
+CMD ["bash", "-c", "docker-entrypoint.sh postgres"]
