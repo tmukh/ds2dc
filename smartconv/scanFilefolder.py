@@ -5,8 +5,10 @@ from generateImage import generate_dockerfile
 def traverseSameDataModel(exts):
     root_folder = os.getcwd()  # Get the root folder path
     file_paths = []
-    #NOTE: using os.walk here because it handles recursively checking all the subdirectories
+    # NOTE: using os.walk here because it handles recursively checking all the subdirectories
     for root, dirs, files in os.walk(root_folder):
+        # Exclude specific folders from traversal
+        dirs[:] = [d for d in dirs if d not in ["csvs", "graphs", "kv_files"]]
         for file in files:
             if any(file.endswith(ext) for ext in exts):
                 file_path = os.path.join(root, file)
@@ -17,19 +19,21 @@ def traverseSameDataModel(exts):
 
 def traverseMultiDataModels(exts):
     root_folder = os.getcwd()  # Get the root folder path
-    
+
     # Create three separate lists for each file extension category
     tabular_exts = [".csv", ".xlsx", ".xls", ".tsv",
                     ".parquet", ".feather", ".sqlite", ".db"]
     keyvalue_exts = [".json", ".yaml", ".xml", ".properties"]
     graph_exts = [".graphml", ".gml", ".gexf",
-                    ".gdf", ".edgelist", ".adjlist"]
+                  ".gdf", ".edgelist", ".adjlist"]
     files_list_1 = []
     files_list_2 = []
     files_list_3 = []
 
     # NOTE: using os.walk here because it handles recursively checking all the subdirectories
     for root, dirs, files in os.walk(root_folder):
+        # Exclude specific folders from traversal
+        dirs[:] = [d for d in dirs if d not in ["csv", "graphs", "kv_files"]]
         for file in files:
             if any(file.endswith(ext) for ext in tabular_exts):
                 file_path = os.path.join(root, file)
@@ -48,4 +52,3 @@ def traverseMultiDataModels(exts):
                 files_list_3.append(relative_path.replace("\\", "/"))
 
     return files_list_1, files_list_2, files_list_3
-

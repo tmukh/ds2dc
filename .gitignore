@@ -6,6 +6,7 @@ __pycache__/
 # Data Files
 /data/
 /csvs/
+/tbls/
 /.vscode/
 /graphs/
 /keyValue Files/

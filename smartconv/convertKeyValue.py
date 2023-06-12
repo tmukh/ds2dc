@@ -49,7 +49,7 @@ def convert_to_json(file_path):
 
     # Main code
     
-    output_folder = 'keyValue files'
+    output_folder = 'kv_files'
 
     # Create the output folder if it doesn't exist
     if not os.path.exists(output_folder):
