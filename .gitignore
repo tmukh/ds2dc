@@ -9,11 +9,12 @@ __pycache__/
 /tbls/
 /.vscode/
 /graphs/
-/keyValue Files/
+/kv_files/
 /random/
 # C extensions
 *.so
-
+*.dockerfile
+Dockerfile
 # Distribution / packaging
 .Python
 build/

@@ -90,7 +90,16 @@ CMD ["bash", "-c", "docker-entrypoint.sh postgres"]"""
         
         elif cmd_option == "keyvalue":
             kv_dir = "/keyValue files/"
-            dockerfile = f"{dockerfile_header}COPY {kv_dir} {kv_dir}\n"
+            dockerfile = f"""{dockerfile_header}COPY {kv_dir} {kv_dir}\n
+FROM redis
+EXPOSE 6379
+COPY /kv_files/ /kv_files/
+COPY /kv_to_redis.py /kv_to_redis.py
+RUN chmod +x /kv_to_redis.py
+RUN apt-get update && apt-get install -y python3 python3-pip
+RUN pip3 install redis
+# Set the entrypoint to start the Redis server
+ENTRYPOINT ["sh", "-c", "redis-server & sleep 5 && python3 /kv_to_redis.py && tail -f /dev/null"]"""
             dockerfiles.append(dockerfile)
    
     
