@@ -1,0 +1,121 @@
+{
+  "version": "1.0",
+  "schemas": [
+    {
+      "name": "myschema",
+      "tables": [
+        {
+          "name": "file1",
+          "type": "custom",
+          "factory": "TabularFactory",
+          "operand": {
+            "type": "tabular",
+            "columns": [
+              {
+                "name": "column1",
+                "type": "VARCHAR"
+              },
+              {
+                "name": "column2",
+                "type": "INTEGER"
+              },
+              {
+                "name": "column3",
+                "type": "DOUBLE"
+              }
+            ]
+          }
+        },
+        {
+          "name": "file2",
+          "type": "custom",
+          "factory": "GraphFactory",
+          "operand": {
+            "type": "graph",
+            "vertices": [
+              {
+                "id": 1,
+                "label": "vertex1"
+              },
+              {
+                "id": 2,
+                "label": "vertex2"
+              },
+              {
+                "id": 3,
+                "label": "vertex3"
+              }
+            ],
+            "edges": [
+              {
+                "source": 1,
+                "target": 2,
+                "label": "edge1"
+              },
+              {
+                "source": 2,
+                "target": 3,
+                "label": "edge2"
+              }
+            ]
+          }
+        },
+        {
+          "name": "file3",
+          "type": "custom",
+          "factory": "DocumentFactory",
+          "operand": {
+            "type": "document",
+            "properties": [
+              {
+                "name": "property1",
+                "type": "VARCHAR"
+              },
+              {
+                "name": "property2",
+                "type": "INTEGER"
+              }
+            ]
+          }
+        },
+        {
+          "name": "file4",
+          "type": "custom",
+          "factory": "KeyValueFactory",
+          "operand": {
+            "type": "keyvalue",
+            "map": {
+              "key1": "value1",
+              "key2": "value2",
+              "key3": "value3"
+            }
+          }
+        }
+      ],
+      "relationships": [
+        {
+          "name": "tabular_relationship",
+          "tables": ["file1", "file2"],
+          "keys": [
+            {
+              "column": "column1",
+              "foreignTable": "file2",
+              "foreignKey": "label"
+            }
+          ]
+        },
+        {
+          "name": "document_relationship",
+          "tables": ["file3"],
+          "keys": [
+            {
+              "column": "property1",
+              "foreignTable": "file3",
+              "foreignKey": "property2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
