@@ -5,113 +5,19 @@
       "name": "myschema",
       "tables": [
         {
-          "name": "file1",
+          "name": "file3",
           "type": "custom",
-          "factory": "TabularFactory",
+          "factory": "DocumentFactory",
           "operand": {
-            "type": "tabular",
-            "columns": [
+            "type": "document",
+            "properties": [
               {
-                "name": "column1",
+                "name": "property1",
                 "type": "VARCHAR"
               },
               {
-                "name": "column2",
+                "name": "property2",
                 "type": "INTEGER"
-              },
-              {
-                "name": "column3",
-                "type": "DOUBLE"
-              }
-            ]
-          }
-        },
-        {
-          "name": "green_tripdata_2023-01",
-          "type": "custom",
-          "factory": "TabularFactory",
-          "operand": {
-            "type": "tabular",
-            "columns": [
-              {
-                "name": "VendorID",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "lpep_pickup_datetime",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "lpep_dropoff_datetime",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "store_and_fwd_flag",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "RatecodeID",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "PULocationID",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "DOLocationID",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "passenger_count",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "trip_distance",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "fare_amount",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "extra",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "mta_tax",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "tip_amount",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "tolls_amount",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "ehail_fee",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "improvement_surcharge",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "total_amount",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "payment_type",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "trip_type",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "congestion_surcharge",
-                "type": "VARCHAR"
               }
             ]
           }

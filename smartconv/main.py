@@ -11,10 +11,13 @@ if __name__ == "__main__":
             exts_tabular = [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"]
             exts_graph = [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"]
             exts_keyvalue = [".json", ".yaml", ".xml", ".properties"]
+            exts_document = [".json", ".yaml", ".bson"]
             
             tabular_paths = scanFilefolder.traverseMultiDataModels(exts_tabular)[0]
             graph_paths = scanFilefolder.traverseMultiDataModels(exts_graph)[1]
             keyvalue_paths = scanFilefolder.traverseMultiDataModels(exts_keyvalue)[2]
+            document_paths = scanFilefolder.traverseMultiDataModels(exts_document)[3]
+
             all_paths  = [item for sublist in [tabular_paths, graph_paths, keyvalue_paths] for item in sublist]
             
             if len(all_paths) > 0:
@@ -39,6 +42,8 @@ if __name__ == "__main__":
             exts = [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"]
         elif model == "keyvalue":
             exts = [".json", ".yaml", ".xml", ".properties"]
+        elif model == "document":
+            exts = [".json", ".yaml", ".bson"]
         else:
             print("Invalid Data Model. Available options for same-datamodel are: tabular, graph, keyvalue")
             sys.exit(1)
