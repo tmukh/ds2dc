@@ -19,25 +19,18 @@ def generate_dockerfile(files, cmd_option):
     exts_tabular = [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"]
     exts_graph = [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"]
     exts_keyvalue = [".json", ".yaml", ".xml", ".properties"]
+    exts_document = [".json", ".bson", ".yaml"]
 
     dockerfiles = []
     
     def graph_tool(cmd_option):
-        # Add setup for graph tools, like Neo4j server
         return f"FROM neo4j:latest\n\n"
-    
     def tabular_tool(cmd_option):
-        # Add setup for tabular tools, like PostgreSQL server
         return f"FROM postgres:latest\n\n"
-    
     def keyvalue_tool(cmd_option):
-        # Add setup for key-value tools, like Redis server
-        return f"RUN setup_redis\n\n"
-    
-    def multimodel_tool(cmd_option):
-        # Add setup for multimodel tools, if needed
-        return ""
-    
+        return f"FROM redis:latest\n\n"
+    def document_tool(cmd_option):
+        return f"FROM mongo:latest\n\n"
     def get_dockerfile_header(cmd_option):
         # Get the appropriate tool setup based on cmd_option
         if cmd_option == "graph":
@@ -46,10 +39,12 @@ def generate_dockerfile(files, cmd_option):
             return tabular_tool(cmd_option)
         elif cmd_option == "keyvalue":
             return keyvalue_tool(cmd_option)
+        elif cmd_option == "document":
+            return document_tool(cmd_option)
         elif cmd_option == "multimodel":
-            return multimodel_tool(cmd_option)
+            return
         else:
-            raise ValueError("Invalid cmd_option. Expected 'graph', 'tabular', 'keyvalue', or 'multimodel'.")
+            raise ValueError("Invalid cmd_option. Expected 'graph', 'tabular', 'keyvalue', 'document' or 'multimodel'.")
     def create_docker_file_based_on_cmd(cmd_option):
         if cmd_option == "graph":
             graph_dir = "/graphs/"
@@ -91,7 +86,6 @@ CMD ["bash", "-c", "docker-entrypoint.sh postgres"]"""
         elif cmd_option == "keyvalue":
             kv_dir = "/keyValue files/"
             dockerfile = f"""{dockerfile_header}COPY {kv_dir} {kv_dir}\n
-FROM redis
 EXPOSE 6379
 COPY /kv_files/ /kv_files/
 COPY /kv_to_redis.py /kv_to_redis.py
@@ -100,6 +94,17 @@ RUN apt-get update && apt-get install -y python3 python3-pip
 RUN pip3 install redis
 # Set the entrypoint to start the Redis server
 ENTRYPOINT ["sh", "-c", "redis-server & sleep 5 && python3 /kv_to_redis.py && tail -f /dev/null"]"""
+            dockerfiles.append(dockerfile)
+        elif cmd_option == "document":
+            doc_dir = "/doc_files/"
+            dockerfile = f"""{dockerfile_header}COPY /docker-entrypoint-initdb.d/{doc_dir} {doc_dir}\n
+ENV MONGO_INITDB_DATABASE=import_db \n
+ENV MONGO_INITDB_ROOT_USERNAME=admin \n
+ENV MONGO_INITDB_ROOT_PASSWORD=123 \n
+COPY smartconv/import_scripts/import_docs.sh /docker-entrypoint-initdb.d/import.sh
+
+CMD ["mongod", "--bind_ip_all"]
+"""
             dockerfiles.append(dockerfile)
    
     
@@ -113,6 +118,7 @@ ENTRYPOINT ["sh", "-c", "redis-server & sleep 5 && python3 /kv_to_redis.py && ta
         graph_files = [path for path in files if get_extension(path).lower() in exts_graph]
         csv_files = [path for path in files if get_extension(path).lower() in exts_tabular]
         kv_files = [path for path in files if get_extension(path).lower() in exts_keyvalue]
+        doc_files = [path for path in files if get_extension(path).lower() in exts_document]
 
         if graph_files:
             dockerfile_header = get_dockerfile_header("graph")
@@ -124,11 +130,13 @@ ENTRYPOINT ["sh", "-c", "redis-server & sleep 5 && python3 /kv_to_redis.py && ta
         if kv_files:
             dockerfile_header = get_dockerfile_header("keyvalue")
             create_docker_file_based_on_cmd("keyvalue")
-    elif cmd_option in ['tabular','graph','keyvalue']:
+        if doc_files:
+            dockerfile_header = get_dockerfile_header("document")
+            create_docker_file_based_on_cmd("document")
+    elif cmd_option in ['tabular', 'graph', 'keyvalue', 'document']:
         get_dockerfile_header(cmd_option)
         create_docker_file_based_on_cmd(cmd_option)
     else:
-        raise ValueError("Invalid cmd_option. Expected 'graph', 'tabular', 'keyvalue', or 'multimodel'.")
+        raise ValueError("Invalid cmd_option. Expected 'graph', 'tabular', 'keyvalue', 'document', or 'multimodel'.")
     
     return dockerfiles
-

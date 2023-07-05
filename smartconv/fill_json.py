@@ -6,7 +6,6 @@ def add_files_to_json(folder_name, model_type):
     # Load the existing JSON structure from file
     with open('meta-data.json', 'r') as json_file:
         json_data = json.load(json_file)
-    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
     # Remove existing tables and relationships based on model type
     if model_type != 'tabular':
         json_data['schemas'][0]['tables'] = [table for table in json_data['schemas'][0]['tables'] if table['type'] == 'custom' and table['factory'] != 'TabularFactory']

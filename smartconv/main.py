@@ -11,6 +11,7 @@ if __name__ == "__main__":
             exts_tabular = [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"]
             exts_graph = [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"]
             exts_keyvalue = [".json", ".yaml", ".xml", ".properties"]
+<<<<<<< Updated upstream
             exts_document = [".json", ".yaml", ".bson"]
             
             tabular_paths = scanFilefolder.traverseMultiDataModels(exts_tabular)[0]
@@ -19,12 +20,37 @@ if __name__ == "__main__":
             document_paths = scanFilefolder.traverseMultiDataModels(exts_document)[3]
 
             all_paths  = [item for sublist in [tabular_paths, graph_paths, keyvalue_paths] for item in sublist]
+=======
+            exts_document = [".json", ".bson", ".yaml"]
             
-            if len(all_paths) > 0:
-                # Process all paths together
-                converted_paths = convert.convert_files_by_extension(all_paths)
-                dockerfiles = generateImage.generate_dockerfile(converted_paths, "multimodel")
-                generateImage.write_dockerfiles(dockerfiles)
+            tabular_paths = scanFilefolder.traverseSameDataModel(exts_tabular)
+            graph_paths = scanFilefolder.traverseSameDataModel(exts_graph)
+            keyvalue_paths = scanFilefolder.traverseSameDataModel(exts_keyvalue)
+            document_paths = scanFilefolder.traverseSameDataModel(exts_document)
+
+            # tabular_paths = scanFilefolder.traverseMultiDataModels(exts_tabular)[0]
+            # graph_paths = scanFilefolder.traverseMultiDataModels(exts_graph)[1]
+            # keyvalue_paths = scanFilefolder.traverseMultiDataModels(exts_keyvalue)[2]
+            # document_paths = scanFilefolder.traverseMultiDataModels(exts_document)[3]
+>>>>>>> Stashed changes
+            
+            all_paths = [item for sublist in [tabular_paths, graph_paths, keyvalue_paths, document_paths] for item in sublist]
+            
+            # Process tabular files
+            convert.convert_files(tabular_paths, "tabular", exts_tabular)
+            
+            # Process graph files
+            convert.convert_files(graph_paths, "graph", exts_graph)
+            
+            # Process key-value files
+            convert.convert_files(keyvalue_paths, "keyvalue", exts_keyvalue)
+            
+
+            convert.convert_files(document_paths, "document", exts_document)
+            
+            dockerfiles = generateImage.generate_dockerfile(all_paths, "multimodel")
+            generateImage.write_dockerfiles(dockerfiles)
+
         elif sys.argv[1].lower() == "domain-specific":
             # Handle domain-specific data model case
             pass
@@ -43,9 +69,13 @@ if __name__ == "__main__":
         elif model == "keyvalue":
             exts = [".json", ".yaml", ".xml", ".properties"]
         elif model == "document":
+<<<<<<< Updated upstream
             exts = [".json", ".yaml", ".bson"]
+=======
+            exts = [".json", ".bson", ".yaml"]
+>>>>>>> Stashed changes
         else:
-            print("Invalid Data Model. Available options for same-datamodel are: tabular, graph, keyvalue")
+            print("Invalid Data Model. Available options for same-datamodel are: tabular, graph, keyvalue, document")
             sys.exit(1)
         
         paths = scanFilefolder.traverseSameDataModel(exts)
@@ -60,5 +90,5 @@ if __name__ == "__main__":
         dockerfiles = generateImage.generate_dockerfile(paths, model)
         generateImage.write_dockerfiles(dockerfiles)
     else:
-        print("Invalid Arguments. Usage: python script.py same-datamodel [tabular, graph, keyvalue]")
+        print("Invalid Arguments. Usage: python script.py same-datamodel [tabular, graph, keyvalue, document]")
         sys.exit(1)
