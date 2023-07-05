@@ -4,7 +4,7 @@ import yaml
 import xml.etree.ElementTree as ET
 from configparser import ConfigParser
 
-def convert_to_json(file_path):
+def convert_to_json(file_path, output_folder_name):
     def convert_json(file_path, output_folder):
         with open(file_path, 'r') as file:
             data = json.load(file)
@@ -49,7 +49,10 @@ def convert_to_json(file_path):
 
     # Main code
     
-    output_folder = 'kv_files'
+    if output_folder_name not in ['doc', 'kv_files']:
+        raise ValueError("Invalid output folder name. Expected 'doc' or 'kv_files'.")
+
+    output_folder = 'doc_files' if output_folder_name == 'doc' else 'kv_files'
 
     # Create the output folder if it doesn't exist
     if not os.path.exists(output_folder):

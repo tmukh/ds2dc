@@ -1,14 +1,14 @@
 import os
-from conversion_scripts import TabularConvert, graphConvert, convertKeyValue
+from conversion_scripts import TabularConvert, graphConvert, convertDocKV
 from concurrent.futures import ThreadPoolExecutor
+from Testing import convert_to_redis
 import time
 import threading
 import fill_json
 
 def convert_files(paths, extension_type, extension_list):
-    if extension_type not in ['tabular', 'graph', 'keyvalue', 'nosql']:
-        raise ValueError("Invalid extension type. Supported types: 'tabular', 'graph', 'keyvalue', 'nosql'")
-
+    if extension_type not in ['tabular', 'graph', 'keyvalue', 'document']:
+        raise ValueError("Invalid extension type. Supported types: 'tabular', 'graph', 'keyvalue', 'document'")
     target_extensions = extension_list
     start_time = time.time()  # Record start time
 
@@ -42,22 +42,24 @@ def get_output_extension(extension_type):
         return '.graphml'
     elif extension_type == 'keyvalue':
         return '.json'
+    elif extension_type == 'document':
+        return '.json'
     else:
-        raise ValueError("Invalid extension type. Supported types: 'tabular', 'graph', 'keyvalue', 'nosql'")
+        raise ValueError("Invalid extension type. Supported types: 'tabular', 'graph', 'keyvalue', 'document'")
 
 def convert_file(input_file, extension_type):
     if extension_type == 'tabular':
-        print('in convert')
         convert_to_csv(input_file)
-        fill_json.add_files_to_json('csvs',extension_type)
-
-        
+        fill_json.add_files_to_json('csvs', extension_type)
     elif extension_type == 'graph':
         convert_to_graphml(input_file)
-        fill_json.add_files_to_json('graphs',extension_type)
+        fill_json.add_files_to_json('graphs', extension_type)
     elif extension_type == 'keyvalue':
         convert_to_json(input_file)
-        fill_json.add_files_to_json('kv_files',extension_type)
+        fill_json.add_files_to_json('kv_files', extension_type)
+    elif extension_type == 'document':
+        convert_to_json_doc(input_file)
+        fill_json.add_files_to_json('doc_files', extension_type)
 
 def convert_to_csv(input_file):
     TabularConvert.convert_to_csv_s(input_file)
@@ -66,4 +68,9 @@ def convert_to_graphml(input_file):
     graphConvert.convert_to_graphml(input_file)
 
 def convert_to_json(input_file):
-    convertKeyValue.convert_to_json(input_file)
+    convertDocKV.convert_to_json(input_file,'kv_files')
+    convert_to_redis.json_to_txt(input_file)
+def convert_to_json_doc(input_file):
+    convertDocKV.convert_to_json(input_file,'doc')
+    
+
