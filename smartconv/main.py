@@ -11,16 +11,6 @@ if __name__ == "__main__":
             exts_tabular = [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"]
             exts_graph = [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"]
             exts_keyvalue = [".json", ".yaml", ".xml", ".properties"]
-<<<<<<< Updated upstream
-            exts_document = [".json", ".yaml", ".bson"]
-            
-            tabular_paths = scanFilefolder.traverseMultiDataModels(exts_tabular)[0]
-            graph_paths = scanFilefolder.traverseMultiDataModels(exts_graph)[1]
-            keyvalue_paths = scanFilefolder.traverseMultiDataModels(exts_keyvalue)[2]
-            document_paths = scanFilefolder.traverseMultiDataModels(exts_document)[3]
-
-            all_paths  = [item for sublist in [tabular_paths, graph_paths, keyvalue_paths] for item in sublist]
-=======
             exts_document = [".json", ".bson", ".yaml"]
             
             tabular_paths = scanFilefolder.traverseSameDataModel(exts_tabular)
@@ -32,7 +22,6 @@ if __name__ == "__main__":
             # graph_paths = scanFilefolder.traverseMultiDataModels(exts_graph)[1]
             # keyvalue_paths = scanFilefolder.traverseMultiDataModels(exts_keyvalue)[2]
             # document_paths = scanFilefolder.traverseMultiDataModels(exts_document)[3]
->>>>>>> Stashed changes
             
             all_paths = [item for sublist in [tabular_paths, graph_paths, keyvalue_paths, document_paths] for item in sublist]
             
@@ -69,11 +58,7 @@ if __name__ == "__main__":
         elif model == "keyvalue":
             exts = [".json", ".yaml", ".xml", ".properties"]
         elif model == "document":
-<<<<<<< Updated upstream
-            exts = [".json", ".yaml", ".bson"]
-=======
             exts = [".json", ".bson", ".yaml"]
->>>>>>> Stashed changes
         else:
             print("Invalid Data Model. Available options for same-datamodel are: tabular, graph, keyvalue, document")
             sys.exit(1)

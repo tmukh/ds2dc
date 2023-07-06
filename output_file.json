@@ -5,7 +5,6 @@
       "name": "myschema",
       "tables": [
         {
-<<<<<<< Updated upstream
           "name": "file3",
           "type": "custom",
           "factory": "DocumentFactory",
@@ -21,18 +20,6 @@
                 "type": "INTEGER"
               }
             ]
-=======
-          "name": "file4",
-          "type": "custom",
-          "factory": "KeyValueFactory",
-          "operand": {
-            "type": "keyvalue",
-            "map": {
-              "key1": "value1",
-              "key2": "value2",
-              "key3": "value3"
-            }
->>>>>>> Stashed changes
           }
         }
       ],
