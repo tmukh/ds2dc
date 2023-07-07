@@ -46,8 +46,6 @@ def get_output_extension(extension_type):
         return '.json'
     else:
         raise ValueError("Invalid extension type. Supported types: 'tabular', 'graph', 'keyvalue', 'document'")
-        raise ValueError("Invalid extension type. Supported types: 'tabular', 'graph', 'keyvalue', 'document'")
-
 def convert_file(input_file, extension_type):
     if extension_type == 'tabular':
         convert_to_csv(input_file)

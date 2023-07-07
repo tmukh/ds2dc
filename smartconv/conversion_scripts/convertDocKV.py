@@ -3,6 +3,8 @@ import json
 import yaml
 import xml.etree.ElementTree as ET
 from configparser import ConfigParser
+import shutil
+
 
 def convert_to_json(file_path, output_folder_name):
     def convert_json(file_path, output_folder):
@@ -74,3 +76,10 @@ def convert_to_json(file_path, output_folder_name):
     if file_ext in conversion_map:
         conversion_func = conversion_map[file_ext]
         conversion_func(file_path, output_folder)
+    elif file_ext in ['.csv', '.tsv']:
+        # Copy the CSV/TSV file to the output folder
+        base_name = os.path.basename(file_path)
+        output_path = os.path.join(output_folder, base_name)
+        shutil.copyfile(file_path, output_path)
+    else:
+        raise ValueError("Unsupported file type. Only JSON, YAML, XML, Properties, CSV, and TSV files are supported.")

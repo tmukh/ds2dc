@@ -15,14 +15,14 @@ def traverseSameDataModel(exts):
     return file_paths
 
 
-def traverseMultiDataModels(exts):
+def traverseMultiDataModels():
     root_folder = os.getcwd()  # Get the root folder path
 
     # Create separate lists for each file extension category
     tabular_exts = [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"]
     keyvalue_exts = [".json", ".yaml", ".xml", ".properties"]
     graph_exts = [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"]
-    document_exts = [".json", ".bson", ".yaml"]
+    document_exts = [".json", ".bson", ".yaml",".csv", ".tsv"]
     
     files_list_1 = []  # For tabular files
     files_list_2 = []  # For graph files

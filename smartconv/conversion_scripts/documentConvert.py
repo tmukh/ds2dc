@@ -1,5 +1,4 @@
 import yaml
-import bson.json_util as bson_json
 import json
 import os
 
@@ -9,10 +8,6 @@ def convert_yaml_to_json(yaml_file, json_file):
     
     with open(json_file, 'w') as f:
         json.dump(data, f)
-
-def convert_bson_to_json(bson_file, json_file):
-    with open(bson_file, 'rb') as f:
-        data = bson_json.loads(f.read())
     
     with open(json_file, 'w') as f:
         json.dump(data, f)
@@ -23,10 +18,6 @@ def convert_to_document(file_path, output_dir):
     if file_extension == '.yaml':
         json_file = os.path.join(output_dir, os.path.splitext(os.path.basename(file_path))[0] + '.json')
         convert_yaml_to_json(file_path, json_file)
-        print(f'Converted {file_path} to {json_file}')
-    elif file_extension == '.bson':
-        json_file = os.path.join(output_dir, os.path.splitext(os.path.basename(file_path))[0] + '.json')
-        convert_bson_to_json(file_path, json_file)
         print(f'Converted {file_path} to {json_file}')
     elif file_extension == '.json':
         # The file is already in JSON format, so no conversion is needed
