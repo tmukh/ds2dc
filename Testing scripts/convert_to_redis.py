@@ -23,10 +23,3 @@ def write_data_file(data, output_file):
         for key, values in data.items():
             for value in values:
                 file.write(f"SET {key} {value}\n")
-
-if __name__ == '__main__':
-    folder_path = 'data'  # Folder name changed to 'data'
-    output_file = 'data.txt'
-
-    json_data = process_json_files(folder_path)
-    write_data_file(json_data, output_file)

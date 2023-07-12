@@ -5,21 +5,16 @@
       "name": "myschema",
       "tables": [
         {
-          "name": "file3",
+          "name": "file4",
           "type": "custom",
-          "factory": "DocumentFactory",
+          "factory": "KeyValueFactory",
           "operand": {
-            "type": "document",
-            "properties": [
-              {
-                "name": "property1",
-                "type": "VARCHAR"
-              },
-              {
-                "name": "property2",
-                "type": "INTEGER"
-              }
-            ]
+            "type": "keyvalue",
+            "map": {
+              "key1": "value1",
+              "key2": "value2",
+              "key3": "value3"
+            }
           }
         }
       ],

@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
             convert.convert_files(document_paths, "document", exts_document)
 
-            dockerfiles = generateImage.generate_dockerfile(all_paths, 'multimodel')
+            dockerfiles = generateImage.generate_docker_compose(all_paths, 'multimodel')
 
         elif sys.argv[1].lower() == "domain-specific":
             # Handle domain-specific data model case
@@ -71,7 +71,7 @@ if __name__ == "__main__":
                 sys.exit(1)
 
         convert.convert_files(paths, model, exts)
-        dockerfiles = generateImage.generate_dockerfile(paths, model)
+        dockerfiles = generateImage.generate_docker_compose(paths, model)
     else:
         print(
             "Invalid Arguments. Usage: python script.py same-datamodel [tabular, graph, keyvalue, document]")
