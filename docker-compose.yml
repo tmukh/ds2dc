@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./csvs:/csvs
+      - ./import_scripts/import_tabular_data.sh:/docker-entrypoint-initdb.d/import_tabular_data.sh
+      - ./data:/var/lib/postgresql/data
+
+    ports:
+      - 5432:5432
+
+  redis:
+    image: redis:latest
+    volumes:
+      - ./kv_files:/kv_files
+      - ./kv_to_redis.py:/kv_to_redis.py
+    command: sh -c "redis-server & sleep 5 && python3 /kv_to_redis.py && tail -f /dev/null"
+    ports:
+      - 6379:6379
+
+
+  mongo:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_DATABASE: import_db
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 123
+    volumes:
+      - ./doc_files:/docker-entrypoint-initdb.d
+      - ./smartconv/import_scripts/import_docs.sh:/docker-entrypoint-initdb.d/import.sh
+    command: mongod --bind_ip_all
+    ports:
+      - 27017:27017
+
+  drill:
+    image: apache/drill:latest
+    ports:
+      - '8047:8047'
+    stdin_open: true
+
+networks:
+  default:
+    name: ds2dc_network
+    driver: bridge
+    driver_opts:
+      encrypted: ''

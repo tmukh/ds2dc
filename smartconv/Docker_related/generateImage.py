@@ -41,9 +41,17 @@ def generate_docker_compose(file_paths, data_model):
     else:
         raise ValueError("Invalid data model type")
 
+    docker_compose += generate_drill_docker_compose()
+    docker_compose += "\nnetworks:\n"
+    docker_compose += "  default:\n"
+    docker_compose += "    name: ds2dc_network\n"
+    docker_compose += "    driver: bridge\n"
+    docker_compose += "    driver_opts:\n"
+    docker_compose += "      encrypted: ''\n"
+
     write_docker_compose(docker_compose, "docker-compose.yml")
 
-
+    
 def write_docker_compose(docker_compose_content, filename):
     with open(filename, "w") as f:
         f.write(docker_compose_content)
@@ -59,10 +67,9 @@ def generate_tabular_docker_compose(file_paths):
     docker_compose_body += "    volumes:\n"
     docker_compose_body += "      - ./csvs:/csvs\n"
     docker_compose_body += "      - ./import_scripts/import_tabular_data.sh:/docker-entrypoint-initdb.d/import_tabular_data.sh\n"
+    docker_compose_body += "      - ./data:/var/lib/postgresql/data\n\n"
     docker_compose_body += "    ports:\n"
     docker_compose_body += "      - 5432:5432\n"
-    docker_compose_body += "    volumes:\n"
-    docker_compose_body += "      - ./data:/var/lib/postgresql/data\n\n"
 
     return docker_compose_body
 
@@ -115,3 +122,15 @@ def generate_document_docker_compose(file_paths):
     docker_compose_body += "      - 27017:27017\n\n"
 
     return docker_compose_body
+
+def generate_drill_docker_compose():
+    drill_docker_compose = "  drill:\n"
+    drill_docker_compose += "    image: apache/drill:latest\n"
+    drill_docker_compose += "    ports:\n"
+    drill_docker_compose += "      - '8047:8047'\n"
+    drill_docker_compose += "    stdin_open: true\n"
+    # drill_docker_compose += "    depends_on:\n"
+    # drill_docker_compose += "      - postgres\n"
+    # drill_docker_compose += "      - mongo\n\n"
+
+    return drill_docker_compose
