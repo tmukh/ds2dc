@@ -1,43 +1,25 @@
 version: '3'
 
 services:
-  postgres:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+  arccommander_container:
+    image: ubuntu:latest
+    container_name: arccommander_container
+    command: |
+      bash -c "apt update && \
+             apt install -y wget libicu-dev git && \
+             wget https://github.com/nfdi4plants/arcCommander/releases/download/v0.4.0-linux.x64/arc && \
+             chmod u+x arc && \
+             if ! [ -d "$HOME/bin" ]; then mkdir "$HOME/bin"; fi && \
+             mv arc $HOME/bin/ && \
+             source ~/.bashrc && \
+             arc --version && \
+             apt install -y git-lfs && \
+             git lfs install &&\
+             tail -f /dev/null && \
+             cd SampleARC_Proteomics && \
+             arc export > metadata.json"
     volumes:
-      - ./csvs:/csvs
-      - ./import_scripts/import_tabular_data.sh:/docker-entrypoint-initdb.d/import_tabular_data.sh
-      - ./data:/var/lib/postgresql/data
-
-    ports:
-      - 5432:5432
-
-  redis:
-    image: redis:latest
-    volumes:
-      - ./kv_files:/kv_files
-      - ./kv_to_redis.py:/kv_to_redis.py
-    command: sh -c "redis-server & sleep 5 && python3 /kv_to_redis.py && tail -f /dev/null"
-    ports:
-      - 6379:6379
-
-
-  mongo:
-    image: mongo:latest
-    environment:
-      MONGO_INITDB_DATABASE: import_db
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: 123
-    volumes:
-      - ./doc_files:/docker-entrypoint-initdb.d
-      - ./smartconv/import_scripts/import_docs.sh:/docker-entrypoint-initdb.d/import.sh
-    command: mongod --bind_ip_all
-    ports:
-      - 27017:27017
-
+      - D:\Coding\Thesis\Arcdatasets\SampleARC_Proteomics:/arc
   drill:
     image: apache/drill:latest
     ports:

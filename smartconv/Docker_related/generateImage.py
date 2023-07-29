@@ -1,4 +1,4 @@
-def generate_docker_compose(file_paths, data_model):
+def generate_docker_compose(file_paths, data_model, optionalArcPath):
     docker_compose = "version: '3'\n\n"
     docker_compose += "services:\n"
 
@@ -37,6 +37,8 @@ def generate_docker_compose(file_paths, data_model):
             services.append(generate_document_docker_compose(file_paths))
 
         docker_compose += "\n".join(services)
+    elif data_model == 'domain-specific':
+        docker_compose += generate_domain_specific_docker_compose(optionalArcPath)
 
     else:
         raise ValueError("Invalid data model type")
@@ -134,3 +136,27 @@ def generate_drill_docker_compose():
     # drill_docker_compose += "      - mongo\n\n"
 
     return drill_docker_compose
+
+
+def generate_domain_specific_docker_compose(optionalArcPath):
+    docker_compose = "  arccommander_container:\n"
+    docker_compose += "    image: ubuntu:latest\n"
+    docker_compose += "    container_name: arccommander_container\n"
+    docker_compose += "    command: |\n"
+    docker_compose += "      bash -c \"apt update && \\\n"
+    docker_compose += "             apt install -y wget libicu-dev git && \\\n"
+    docker_compose += "             wget https://github.com/nfdi4plants/arcCommander/releases/download/v0.4.0-linux.x64/arc && \\\n"
+    docker_compose += "             chmod u+x arc && \\\n"
+    docker_compose += "             if ! [ -d \"$HOME/bin\" ]; then mkdir \"$HOME/bin\"; fi && \\\n"
+    docker_compose += "             mv arc $HOME/bin/ && \\\n"
+    docker_compose += "             source ~/.bashrc && \\\n"
+    docker_compose += "             arc --version && \\\n"
+    docker_compose += "             apt install -y git-lfs && \\\n"
+    docker_compose += "             git lfs install &&\\\n"
+    docker_compose += "             tail -f /dev/null && \\\n"
+    docker_compose += "             cd arc && \\\n"
+    docker_compose += "             arc export > metadata.json\"\n"
+    docker_compose += "    volumes:\n"
+    docker_compose += "      - "+optionalArcPath+":/arc\n"
+
+    return docker_compose

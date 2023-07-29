@@ -52,3 +52,24 @@ def traverseMultiDataModels():
                 files_list_4.append(relative_path.replace("\\", "/"))
 
     return files_list_1, files_list_2, files_list_3, files_list_4
+
+def traverseDomainSpecific(exts):
+    root_folder = os.getcwd()  # Get the root folder path
+    domain_specific_files = []
+
+    for root, _, files in os.walk(root_folder):
+        for file in files:
+            if any(file.endswith(ext) for ext in exts):
+                file_path = os.path.join(root, file)
+                if is_readable(file_path):
+                    relative_path = os.path.relpath(file_path, root_folder)  # Get the relative path
+                    domain_specific_files.append(relative_path.replace("\\", "/"))
+
+    return domain_specific_files
+
+def is_readable(file_path):
+    try:
+        with open(file_path, "r"):
+            return True
+    except Exception:
+        return False

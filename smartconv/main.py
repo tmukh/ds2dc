@@ -1,4 +1,4 @@
-import scanFilefolder
+from Crawler import scanFilefolder, checkArcConstraints
 from Docker_related import generateImage
 import sys
 from conversion_scripts import convert
@@ -8,6 +8,7 @@ if __name__ == "__main__":
         print(
             "Invalid Arguments, usage: python convert.py <Data Model> [Extension]")
     elif len(sys.argv) == 2:
+        model = sys.argv[1].lower()
         if sys.argv[1].lower() == "multimodel":
             exts_tabular = [".csv", ".xlsx", ".xls", ".tsv",
                             ".parquet", ".feather", ".sqlite", ".db"]
@@ -38,8 +39,14 @@ if __name__ == "__main__":
             dockerfiles = generateImage.generate_docker_compose(all_paths, 'multimodel')
 
         elif sys.argv[1].lower() == "domain-specific":
-            # Handle domain-specific data model case
-            pass
+            arc_input_path = input("please input the FULL PATH of your ROOT folder of the ARC: \n")
+            arc_paths = scanFilefolder.traverseDomainSpecific([".csv", ".tsv", ".json", ".txt"])
+            if(checkArcConstraints.check_folder_structure(arc_input_path)):
+                print("arc structure valid!")
+                dockerfiles = generateImage.generate_docker_compose(arc_paths, model, arc_input_path)
+            else:
+                print('invalid structure')
+                sys.exit(1)
         else:
             print("Invalid Data Model, Data model has to be one of the following:\n"
                   "1. multimodel\n"
