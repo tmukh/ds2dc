@@ -117,5 +117,15 @@ def generate_document_dockerfile(file_paths):
     dockerfile_body += "COPY doc_files/ /docker-entrypoint-initdb.d/\n"
     dockerfile_body += "COPY smartconv/import_scripts/import_docs.sh /docker-entrypoint-initdb.d/import.sh \n"
     dockerfile_body += 'CMD ["mongod", "--bind_ip_all"]\n'
+    
+def generate_drill_docker_compose():
+    drill_docker_compose = "  drill:\n"
+    drill_docker_compose += "    image: apache/drill:latest\n"
+    drill_docker_compose += "    ports:\n"
+    drill_docker_compose += "      - '8047:8047'\n"
+    drill_docker_compose += "    stdin_open: true\n"
+    drill_docker_compose += "    depends_on:\n"
+    drill_docker_compose += "      - postgres\n"
+    drill_docker_compose += "      - mongo\n\n"
 
     return dockerfile_body

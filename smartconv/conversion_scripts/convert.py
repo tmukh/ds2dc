@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from Testing import convert_to_redis
 import time
 import threading
-import fill_json
+from  Docker_related import fill_json
 
 def convert_files(paths, extension_type, extension_list):
     if extension_type not in ['tabular', 'graph', 'keyvalue', 'document']:
