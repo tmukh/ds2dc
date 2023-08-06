@@ -25,6 +25,3 @@ def convert_to_document(file_path, output_dir):
         print(f'File {file_path} is already in JSON format')
     else:
         print(f'Unsupported file format: {file_extension}')
-
-# Example usage
-output_directory = 'documents'  # Replace with the desired output directory

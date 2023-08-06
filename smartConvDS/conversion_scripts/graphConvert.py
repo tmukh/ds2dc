@@ -1,7 +1,7 @@
 import os
 import networkx as nx
 
-def convert_to_graphml(input_file,root_folder):
+def convert_to_graphml(input_file):
     # Create the output directory if it doesn't exist
     output_dir = "graphs"
     os.makedirs(output_dir, exist_ok=True)

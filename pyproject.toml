@@ -1,0 +1,28 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "smartconvDS"
+version = "0.0.1"
+description = "Converting Unstructured Data lakes into Data Containers"
+authors = [
+  { name = "Tarik Abu Mukh", email = "mukh@rhrk.uni-kl.de" },
+]
+license = { file = "LICENSE.TXT" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.7"
+dependencies = [
+  "networkx==2",
+  "pandas==2.0.1",
+  "PyYAML==6.0.1",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/tmukh/ds2dc"
+"Bug Tracker" = "https://github.com/tmukh/ds2dc/issues"
