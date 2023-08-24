@@ -9,7 +9,7 @@ To install DS2DCGen, follow these steps:
 
 2. Change to the cloned directory:
    ```
-   cd ds2dcgen
+   cd smartConvDS
    ```
 
 3. Install the required dependencies using `pip` and the `requirements.txt` file:
@@ -26,7 +26,7 @@ That's it! You have successfully installed DS2DCGen and its dependencies.
 To run DS2DCGen, execute the following command from the root folder:
 
 ```
-py ./smartconv/main.py
+py -m /run_cconverter
 ```
 
 DS2DCGen supports several command-line arguments to specify the conversion process. Here are the available options:
@@ -34,7 +34,7 @@ DS2DCGen supports several command-line arguments to specify the conversion proce
 ### Multimodel Conversion
 
 ```
-py ./smartconv/main.py multimodel
+py ./smartconv/main.py multimodel [Path]
 ```
 
 - Description: Enables multimodel conversion and generates multiple data containers for the given data structure.
@@ -43,7 +43,7 @@ py ./smartconv/main.py multimodel
 ### Same-Datamodel Conversion
 
 ```
-py ./smartconv/main.py same-datamodel [format]
+py ./smartconv/main.py [Format] [Path]
 ```
 
 - Description: Performs the conversion of a data structure into a specific data container format.
@@ -53,7 +53,7 @@ py ./smartconv/main.py same-datamodel [format]
 ### Domain-Specific Conversion (To be Implemented)
 
 ```
-py ./smartconv/main.py domain specific
+py ./smartconv/main.py domain-specific [Path]
 ```
 
 - Description: Specifies a domain-specific conversion process. Please note that this feature is yet to be implemented.
