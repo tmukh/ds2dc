@@ -42,7 +42,7 @@ def generate_docker_compose(file_paths, data_model, optionalArcPath):
         docker_compose += "\n".join(services)
     elif data_model == 'domain-specific':
         services = []
-        services.append(generate_domain_specific_docker_compose(optionalArcPath))
+        # services.append(generate_domain_specific_docker_compose(optionalArcPath))
         if any(file_path.endswith(tuple(tabular_extensions)) for file_path in file_paths):
             services.append(generate_tabular_docker_compose(file_paths))
 
@@ -170,30 +170,30 @@ def generate_drill_docker_compose():
     return drill_docker_compose
 
 
-def generate_domain_specific_docker_compose(optionalArcPath):
-    script_dir = run_converter.script_dir
-    init_script = os.path.join(script_dir, "init_scripts", "init_arc.sh")  # Adjust "import_docs.sh" with the actual filename
+# def generate_domain_specific_docker_compose(optionalArcPath):
+#     script_dir = run_converter.script_dir
+#     init_script = os.path.join(script_dir, "init_scripts", "init_arc.sh")  # Adjust "import_docs.sh" with the actual filename
 
     
-    docker_compose = f"  arccommander_container:\n"
-    docker_compose += f"    image: ubuntu:latest\n"
-    docker_compose += f"    container_name: arccommander_container\n"
-    docker_compose += f"    command:  /arc_files/init_arc.sh \n"
-    # bash -c  \"apt update && \n"
-    # docker_compose += f"             apt install -y wget libicu-dev git && \n"
-    # docker_compose += f"             wget https://github.com/nfdi4plants/arcCommander/releases/download/v0.4.0-linux.x64/arc && \n"
-    # docker_compose += f"             chmod u+x arc && \n"
-    # docker_compose += f"             if ! [ -d \"$HOME/bin\" ]; then mkdir \"$HOME/bin\"; fi && \n"
-    # docker_compose += f"             mv arc $HOME/bin/ && \n"
-    # docker_compose += f"             source ~/.bashrc && \n"
-    # docker_compose += f"             arc --version && \n"
-    # docker_compose += f"             apt install -y git-lfs && \n"
-    # docker_compose += f"             git lfs install &&\n"
-    # docker_compose += f"             cd arc_files && \n"
-    # docker_compose += f"             arc export > metadata.json && \n"
-    # docker_compose += f"             tail -f /dev/null \"\n"
-    docker_compose += f"    volumes:\n"
-    docker_compose += f"      - ./:/arc_files\n"
-    docker_compose += f"      -  {init_script}:/arc_files/init_arc.sh"
+#     docker_compose = f"  arccommander_container:\n"
+#     docker_compose += f"    image: ubuntu:latest\n"
+#     docker_compose += f"    container_name: arccommander_container\n"
+#     docker_compose += f"    command:  /arc_files/init_arc.sh \n"
+#     # bash -c  \"apt update && \n"
+#     # docker_compose += f"             apt install -y wget libicu-dev git && \n"
+#     # docker_compose += f"             wget https://github.com/nfdi4plants/arcCommander/releases/download/v0.4.0-linux.x64/arc && \n"
+#     # docker_compose += f"             chmod u+x arc && \n"
+#     # docker_compose += f"             if ! [ -d \"$HOME/bin\" ]; then mkdir \"$HOME/bin\"; fi && \n"
+#     # docker_compose += f"             mv arc $HOME/bin/ && \n"
+#     # docker_compose += f"             source ~/.bashrc && \n"
+#     # docker_compose += f"             arc --version && \n"
+#     # docker_compose += f"             apt install -y git-lfs && \n"
+#     # docker_compose += f"             git lfs install &&\n"
+#     # docker_compose += f"             cd arc_files && \n"
+#     # docker_compose += f"             arc export > metadata.json && \n"
+#     # docker_compose += f"             tail -f /dev/null \"\n"
+#     docker_compose += f"    volumes:\n"
+#     docker_compose += f"      - ./:/arc_files\n"
+#     docker_compose += f"      -  {init_script}:/arc_files/init_arc.sh"
 
-    return docker_compose
+#     return docker_compose

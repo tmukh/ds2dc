@@ -4,13 +4,23 @@ import os
 
 script_dir = os.path.abspath(os.path.dirname(__file__))
 
+def check_and_install_arc():
+    # Check if 'arc' command is available
+    try:
+        subprocess.run(['arc', '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        print("'arc' is already installed!")
+    except Exception:
+        print("'arc' is not installed. Installing...")
+        # Run your installation script here
+        subprocess.run([script_dir+'/init_scripts/init_arc.sh'], shell=True)
+
 def run_converter_with_args(model, root_folder):
     script_dir = os.path.abspath(os.path.dirname(__file__))
     print(script_dir)
     os.chdir(script_dir)
 
     # Construct the command to call main.py
-    cmd = ['python', 'main.py', model, root_folder]
+    cmd = ['python3', 'main.py', model, root_folder]
 
     try:
         subprocess.run(cmd, check=True)
@@ -19,6 +29,7 @@ def run_converter_with_args(model, root_folder):
         sys.exit(1)
 
 def main():
+    check_and_install_arc() 
     if len(sys.argv) < 3:
         print("Invalid Arguments, usage: python run_converter.py <Data Model> <Root folder>")
         sys.exit(1)

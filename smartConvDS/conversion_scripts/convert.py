@@ -8,7 +8,7 @@ conversion_info = {
     'tabular': (TabularConvert.convert_to_csv_parallel, None),
     'graph': (graphConvert.convert_to_graphml, None),
     'keyvalue': (convertDocKV.convert_to_json_and_txt, 'kv_files'),
-    'document': (documentConvert.convert_to_document, 'doc')
+    'document': (convertDocKV.convert_to_json_and_txt, 'doc')
 }
 
 def convert_files(paths, extension_type, extension_list):

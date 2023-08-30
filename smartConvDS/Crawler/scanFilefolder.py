@@ -7,6 +7,8 @@ def traverseDataModel(exts, excluded_dirs=None):
     if excluded_dirs is None:
         excluded_dirs = ["csvs", "graphs", "kv_files", "doc_files", ".vscode", "arc_files"]
 
+    excluded_files = ["arcMetadata.json"]  # Add the file you want to exclude
+
     for root, _, files in os.walk(root_folder):
         if any(dir_name in root for dir_name in excluded_dirs):
             continue
@@ -14,8 +16,7 @@ def traverseDataModel(exts, excluded_dirs=None):
         file_paths.extend(
             os.path.relpath(os.path.join(root, file), root_folder).replace("\\", "/")
             for file in files
-            if any(file.endswith(ext) for ext in exts)
-        )
+            if any(file.endswith(ext) for ext in exts) and file not in excluded_files       )
     print(file_paths)
     return file_paths
 

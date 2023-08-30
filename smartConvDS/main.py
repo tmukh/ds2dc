@@ -40,7 +40,7 @@ def multimodel_handler():
         "tabular": [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"],
         "graph": [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"],
         "keyvalue": [".json", ".yaml", ".xml", ".properties"],
-        "document": [".json", ".bson", ".yaml", ".csv", ".tsv"]
+        "document": [".json", ".yaml"]
     }
 
     all_paths = []
@@ -49,7 +49,7 @@ def multimodel_handler():
         all_paths.extend(paths)
         convert.convert_files(paths, model, exts_dict[model])
 
-    dockerfiles = generateImage.generate_docker_compose(all_paths, 'multimodel', [])
+    generateImage.generate_docker_compose(all_paths, 'multimodel', [])
 
 def domain_specific_handler(root_folder):
     os.chdir(root_folder)
@@ -59,7 +59,7 @@ def domain_specific_handler(root_folder):
         arcFileCopy.copy_files_to_arc_folder(arc_paths)
         run_converter.run_converter_with_args('multimodel', root_folder)
         os.chdir(root_folder)
-        dockerfiles = generateImage.generate_docker_compose(arc_paths, "domain-specific", root_folder)
+        generateImage.generate_docker_compose(arc_paths, "domain-specific", root_folder)
     else:
         print('invalid structure')
         sys.exit(1)
@@ -79,7 +79,7 @@ def same_datamodel_handler(model, root_folder):
 
     paths = scanFilefolder.traverseSameDataModel(exts)
     convert.convert_files(paths, model, exts)
-    dockerfiles = generateImage.generate_docker_compose(paths, model, [])
+    generateImage.generate_docker_compose(paths, model, [])
 
 if __name__ == "__main__":
     main()
