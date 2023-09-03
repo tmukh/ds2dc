@@ -15,11 +15,10 @@ conversion_info = {
     'document': (convertDocKV.convert_to_json_and_txt, 'doc')
 }
 
-# Define a function to sanitize file names
 def sanitize_file_name(file_name):
-    # Replace invalid characters with underscores (you can customize this as needed)
-    sanitized_name = re.sub(r'[\\/:*?"<>|]', '_', file_name)
-    return sanitized_name
+    # Replace invalid characters with underscores, including hyphens
+    return re.sub(r'[^\w_.-]', '_', file_name).replace(' ', '_')
+
 
 def convert_files(paths, extension_type, extension_list):
     if extension_type not in ['tabular', 'graph', 'keyvalue', 'document']:

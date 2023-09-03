@@ -31,7 +31,7 @@ def run_converter_with_args(model, root_folder):
 def main():
     check_and_install_arc() 
     if len(sys.argv) < 3:
-        print("Invalid Arguments, usage: python run_converter.py <Data Model> <Root folder>")
+        print("Invalid Arguments, usage: python -m run_converter <Data Model> <Root folder>")
         sys.exit(1)
 
     model = sys.argv[1].lower()
