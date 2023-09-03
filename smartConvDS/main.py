@@ -39,7 +39,7 @@ def multimodel_handler():
     exts_dict = {
         "tabular": [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"],
         "graph": [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"],
-        "keyvalue": [".json", ".yaml", ".xml", ".properties"],
+        "keyvalue": [".json", ".yaml"],# ".xml", ".properties"],
         "document": [".json", ".yaml"]
     }
 
@@ -68,7 +68,7 @@ def same_datamodel_handler(model, root_folder):
     exts_dict = {
         "tabular": [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"],
         "graph": [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"],
-        "keyvalue": [".json", ".yaml", ".xml", ".properties"],
+        "keyvalue": [".json", ".yaml"], # ".xml", ".properties"],
         "document": [".json", ".bson", ".yaml", ".csv", ".tsv"]
     }
 

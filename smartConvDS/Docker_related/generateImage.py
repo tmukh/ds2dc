@@ -4,7 +4,7 @@ tabular_extensions = [".csv", ".xlsx", ".xls", ".tsv",
                         ".parquet", ".feather", ".sqlite", ".db"]
 graph_extensions = [".graphml", ".gml", ".gexf",
                     ".gdf", ".edgelist", ".adjlist"]
-keyvalue_extensions = [".json", ".yaml", ".xml", ".properties"]
+keyvalue_extensions = [".json", ".yaml",] #".xml", ".properties"]
 document_extensions = [".json", ".bson", ".yaml", ".csv"]
 def generate_docker_compose(file_paths, data_model, optionalArcPath):
     docker_compose = "version: '3'\n\n"

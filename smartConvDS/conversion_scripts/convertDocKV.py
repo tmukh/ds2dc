@@ -55,8 +55,8 @@ def convert_to_json_and_txt(file_path, output_folder_name):
         '.json': json.load,
         '.yaml': yaml.safe_load,
         '.yml': yaml.safe_load,
-        '.xml': lambda file: {child.tag: child.text for child in ET.parse(file).getroot().iter()},
-        '.properties': lambda file: {section: dict(ConfigParser().read(file).items(section)) for section in ConfigParser().sections()}
+        # '.xml': lambda file: {child.tag: child.text for child in ET.parse(file).getroot().iter()},
+        # '.properties': lambda file: {section: dict(ConfigParser().read(file).items(section)) for section in ConfigParser().sections()}
     }
 
     # Get the file extension

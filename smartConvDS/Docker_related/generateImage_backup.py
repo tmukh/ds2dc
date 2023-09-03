@@ -26,7 +26,7 @@ def generate_dockerfile(file_paths, data_model):
                               ".parquet", ".feather", ".sqlite", ".db"]
         graph_extensions = [".graphml", ".gml", ".gexf",
                             ".gdf", ".edgelist", ".adjlist"]
-        keyvalue_extensions = [".json", ".yaml", ".xml", ".properties"]
+        keyvalue_extensions = [".json", ".yaml"],# ".xml", ".properties"]
         document_extensions = [".json", ".bson", ".yaml", ".csv"]
 
         tabular_files = [file_path for file_path in file_paths if any(

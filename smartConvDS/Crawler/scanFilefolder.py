@@ -28,7 +28,7 @@ def traverseMultiDataModels():
 
     # Create separate lists for each file extension category
     tabular_exts = [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"]
-    keyvalue_exts = [".json", ".yaml", ".xml", ".properties"]
+    keyvalue_exts = [".json", ".yaml"],# ".xml", ".properties"]
     graph_exts = [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"]
     document_exts = [".json", ".bson", ".yaml", ".csv", ".tsv"]
 
