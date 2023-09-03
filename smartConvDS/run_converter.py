@@ -12,10 +12,9 @@ def check_and_install_arc():
     except Exception:
         print("'arc' is not installed. Installing...")
         # Run your installation script here
-        subprocess.run([script_dir+'/init_scripts/init_arc.sh'], shell=True)
+        subprocess.run([os.path.join(script_dir, 'init_scripts', 'init_arc.sh')], shell=True)
 
 def run_converter_with_args(model, root_folder):
-    script_dir = os.path.abspath(os.path.dirname(__file__))
     print(script_dir)
     os.chdir(script_dir)
 
@@ -35,7 +34,7 @@ def main():
         sys.exit(1)
 
     model = sys.argv[1].lower()
-    root_folder = sys.argv[2]
+    root_folder = sys.argv[-1]
 
     run_converter_with_args(model, root_folder)
 

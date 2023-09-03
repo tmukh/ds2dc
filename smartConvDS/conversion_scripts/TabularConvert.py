@@ -13,7 +13,7 @@ csv_folder = os.path.join(sys.argv[-1], 'csvs')
 
 def clean_file_name(file_name):
     # Replace invalid characters with underscores, including hyphens
-    return re.sub(r'[^\w_.-]', '_', file_name).replace(' ', '_').replace('-', '_')
+    return re.sub(r'[^\w_.-]', '_', file_name).replace(' ', '_').replace('-', '_').replace('.','_')
 
 
 def get_unique_csv_file_name(file_name, parent_folder):
