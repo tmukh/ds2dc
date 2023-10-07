@@ -1,7 +1,8 @@
-import os, sys
+import os
+import sys
 
 def traverseDataModel(exts, excluded_dirs=None):
-    root_folder =  sys.argv[-1] # Get the root folder path
+    root_folder = sys.argv[-1]  # Get the root folder path
     file_paths = []
 
     if excluded_dirs is None:
@@ -13,10 +14,11 @@ def traverseDataModel(exts, excluded_dirs=None):
         if any(dir_name in root for dir_name in excluded_dirs):
             continue
 
-        file_paths.extend(
-            os.path.relpath(os.path.join(root, file), root_folder).replace("\\", "/")
-            for file in files
-            if any(file.endswith(ext) for ext in exts) and file not in excluded_files       )
+        for file in files:
+            if any(file.endswith(ext) for ext in exts) and file not in excluded_files:
+                full_path = os.path.abspath(os.path.join(root, file))
+                file_paths.append(full_path)
+
     print(file_paths)
     return file_paths
 
@@ -24,11 +26,11 @@ def traverseSameDataModel(exts):
     return traverseDataModel(exts)
 
 def traverseMultiDataModels():
-    root_folder =  sys.argv[-1] # Get the root folder path
+    root_folder = sys.argv[-1]  # Get the root folder path
 
     # Create separate lists for each file extension category
     tabular_exts = [".csv", ".xlsx", ".xls", ".tsv", ".parquet", ".feather", ".sqlite", ".db"]
-    keyvalue_exts = [".json", ".yaml"],# ".xml", ".properties"]
+    keyvalue_exts = [".json", ".yaml"]
     graph_exts = [".graphml", ".gml", ".gexf", ".gdf", ".edgelist", ".adjlist"]
     document_exts = [".json", ".bson", ".yaml", ".csv", ".tsv"]
 

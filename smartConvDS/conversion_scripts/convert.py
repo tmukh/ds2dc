@@ -2,8 +2,7 @@ import os
 import sys
 import time
 import re  # Import the regular expression module for sanitization
-from conversion_scripts import TabularConvert, graphConvert, convertDocKV, documentConvert
-from Testing import convert_to_redis
+from conversion_scripts import TabularConvert, graphConvert, convertDocKV
 
 root_folder = sys.argv[-1]
 
@@ -18,7 +17,6 @@ conversion_info = {
 def sanitize_file_name(file_name):
     # Replace invalid characters with underscores, including hyphens
     return re.sub(r'[^\w_.-]', '_', file_name).replace(' ', '_')
-
 
 def convert_files(paths, extension_type, extension_list):
     if extension_type not in ['tabular', 'graph', 'keyvalue', 'document']:
@@ -54,6 +52,8 @@ def convert_files(paths, extension_type, extension_list):
     print("Execution time:", elapsed_time, "seconds")
 
 def convert_file(input_file, extension_type):
+    input_file = os.path.abspath(input_file)  # Get the full path of the input file
+
     if extension_type in conversion_info:
         conversion_function, output_folder_name = conversion_info[extension_type]
         if output_folder_name is not None:
@@ -62,5 +62,3 @@ def convert_file(input_file, extension_type):
             conversion_function(input_file)
     else:
         print(f"Invalid extension type: {extension_type}")
-
-        

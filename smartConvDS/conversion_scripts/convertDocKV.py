@@ -2,9 +2,8 @@ import os
 import json
 import yaml
 import xml.etree.ElementTree as ET
-from configparser import ConfigParser
 import shutil
-
+from main import get_root_folder
 def get_unique_file_name(output_folder, base_name):
     counter = 1
     file_name = os.path.splitext(base_name)[0]  # Remove the extension from the file name
@@ -37,14 +36,15 @@ def process_json(data, prefix='', txt_file=None, key_set=None, parent_folder_nam
             new_prefix = f"{prefix}_{new_key}"
             process_json(value, new_prefix, txt_file, key_set, parent_folder_name, file_name)
     else:
-        if parent_folder_name and file_name:
-            txt_file.write(f"SET {parent_folder_name}_{os.path.splitext(file_name)[0]}_{prefix} {data}\n")  # Remove the extension from the file name
-
+        # Check if file_name starts with 'arcMeta'
+        if not file_name.startswith('arcMeta'):
+            if parent_folder_name and file_name:
+                txt_file.write(f"SET {parent_folder_name}_{os.path.splitext(file_name)[0]}_{prefix} {data}\n")
 def convert_to_json_and_txt(file_path, output_folder_name):
     if output_folder_name not in ['doc', 'kv_files']:
         raise ValueError("Invalid output folder name. Expected 'doc' or 'kv_files'.")
 
-    output_folder = 'doc_files' if output_folder_name == 'doc' else 'kv_files'
+    output_folder = os.path.abspath(get_root_folder()+'/doc_files') if output_folder_name == 'doc' else os.path.abspath(get_root_folder()+'/kv_files')
 
     # Create the output folder if it doesn't exist
     if not os.path.exists(output_folder):
@@ -74,7 +74,7 @@ def convert_to_json_and_txt(file_path, output_folder_name):
             json.dump(data, file, indent=4)
 
         # Call the process_json function for JSON to TXT conversion
-        txt_output_folder = 'kv_files'
+        txt_output_folder = os.path.abspath(get_root_folder()+'/kv_files')
         if not os.path.exists(txt_output_folder):
             os.makedirs(txt_output_folder)
         txt_output_path = os.path.join(txt_output_folder, 'keys.txt')

@@ -1,5 +1,6 @@
 import run_converter
 import os
+from conversion_scripts.convertDocKV import get_root_folder
 tabular_extensions = [".csv", ".xlsx", ".xls", ".tsv",
                         ".parquet", ".feather", ".sqlite", ".db"]
 graph_extensions = [".graphml", ".gml", ".gexf",
@@ -71,14 +72,14 @@ def generate_docker_compose(file_paths, data_model, optionalArcPath):
 
     
 def write_docker_compose(docker_compose_content, filename):
-    with open(filename, "w") as f:
+    with open(get_root_folder()+'/'+filename, "w") as f:
         f.write(docker_compose_content)
 
 
 def generate_tabular_docker_compose(file_paths):
     script_dir = run_converter.script_dir
     import_script = os.path.join(script_dir, "import_scripts", "import_tabular_data.sh")  # Adjust "import_tabular_data.sh" with the actual filename
-    data_volume = os.path.join(script_dir, "data")  # Adjust "data" with the actual path relative to script_dir
+    data_volume = os.path.join(get_root_folder(), "data")  # Adjust "data" with the actual path relative to script_dir
 
     docker_compose_body = f"  postgres:\n"
     docker_compose_body += f"    image: postgres:latest\n"
@@ -87,7 +88,7 @@ def generate_tabular_docker_compose(file_paths):
     docker_compose_body += f"      POSTGRES_PASSWORD: postgres\n"
     docker_compose_body += f"      POSTGRES_DB: postgres\n"
     docker_compose_body += f"    volumes:\n"
-    docker_compose_body += f"      - ./csvs/:/csvs\n"
+    docker_compose_body += f"      - {get_root_folder()}csvs/:/csvs\n"
     docker_compose_body += f"      - {import_script}:/docker-entrypoint-initdb.d/import_tabular_data.sh\n"
     docker_compose_body += f"      - {data_volume}:/var/lib/postgresql/data\n\n"
     docker_compose_body += f"    ports:\n"
@@ -110,7 +111,7 @@ def generate_graph_docker_compose(file_paths):
     docker_compose_body += "      NEO4J_apoc_import_file_enabled: 'true'\n"
     docker_compose_body += "      NEO4J_apoc_import_file_use_neo4j_config: 'true'\n"
     docker_compose_body += "    volumes:\n"
-    docker_compose_body += "      - ./graphs/:/var/lib/neo4j/import\n"
+    docker_compose_body += f"      - {get_root_folder()}/graphs/:/var/lib/neo4j/import\n"
     docker_compose_body += f"      - {import_script}:/var/lib/neo4j/import/import_graph_data.sh\n"
     docker_compose_body += "    ports:\n"
     docker_compose_body += "      - 7474:7474\n"
@@ -126,7 +127,7 @@ def generate_keyvalue_docker_compose(file_paths):
     docker_compose_body = "  redis:\n"
     docker_compose_body += "    image: redis:latest\n"
     docker_compose_body += "    volumes:\n"
-    docker_compose_body += "     - ./kv_files/:/kv_files\n"
+    docker_compose_body += f"     - {get_root_folder()}kv_files/:/kv_files\n"
     docker_compose_body += f"     - {import_script}:/docker-entrypoint-initdb.d/import.sh \n"
     docker_compose_body += f"     - {init_script}:/init_redis.sh \n"
     docker_compose_body += "    command: /init_redis.sh \n"
@@ -145,10 +146,8 @@ def generate_document_docker_compose(file_paths):
     docker_compose_body += f"    image: mongo:latest\n"
     docker_compose_body += f"    environment:\n"
     docker_compose_body += f"      MONGO_INITDB_DATABASE: import_db\n"
-    docker_compose_body += f"      MONGO_INITDB_ROOT_USERNAME: admin\n"
-    docker_compose_body += f"      MONGO_INITDB_ROOT_PASSWORD: 123\n"
     docker_compose_body += f"    volumes:\n"
-    docker_compose_body += f"      - ./doc_files/:/docker-entrypoint-initdb.d\n"
+    docker_compose_body += f"      - {get_root_folder()}doc_files/:/doc_files/\n"
     docker_compose_body += f"      - {import_script}:/docker-entrypoint-initdb.d/import.sh\n"
     docker_compose_body += f"      - {init_script}:/init_mongo.sh\n"
     docker_compose_body += f"    command: /init_mongo.sh \n"

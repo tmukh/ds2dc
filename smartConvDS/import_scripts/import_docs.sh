@@ -2,7 +2,7 @@
 
 set -e
 
-mongoimport_args="--host localhost --port 27017 --db $MONGO_INITDB_DATABASE --username admin --password 123 --authenticationDatabase admin"
+mongoimport_args="--host localhost --port 27017 --db $MONGO_INITDB_DATABASE"
 
 # Function to import a single CSV file into its own collection
 function import_csv_file() {
@@ -40,7 +40,7 @@ function import_csv_files() {
 }
 
 # Recursively search for JSON files in all subdirectories and import them
-find /docker-entrypoint-initdb.d/ -type f -name "*.json" -print0 | while IFS= read -r -d $'\0' json_file; do
+find /doc_files/ -type f -name "*.json" -print0 | while IFS= read -r -d $'\0' json_file; do
     collection=$(basename "$(dirname "$json_file")")
 
     # Import JSON files
@@ -54,7 +54,7 @@ find /docker-entrypoint-initdb.d/ -type f -name "*.json" -print0 | while IFS= re
 done
 
 # Import CSV/TSV files in the root directory if they exist
-import_csv_files "/docker-entrypoint-initdb.d"
+import_csv_files "/doc_files/"
 
 # Wait for the MongoDB server to start
 sleep 5

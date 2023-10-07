@@ -13,7 +13,7 @@ csv_folder = os.path.join(sys.argv[-1], 'csvs')
 
 def clean_file_name(file_name):
     # Replace invalid characters with underscores, including hyphens
-    return re.sub(r'[^\w_.-]', '_', file_name).replace(' ', '_').replace('-', '_').replace('.','_')
+    return re.sub(r'[^\w_.-]', '_', file_name).replace(' ', '_').replace('-', '_').replace('.', '_')
 
 
 def get_unique_csv_file_name(file_name, parent_folder):
@@ -47,6 +47,7 @@ def export_table_to_csv(database_file, table_name):
 
 
 def process_csv_file(file_input):
+    file_input = os.path.abspath(file_input)  # Get the full path of the input file
     file_name = os.path.splitext(os.path.basename(file_input))[0]
     parent_folder = os.path.basename(os.path.dirname(file_input))
 

@@ -4,9 +4,7 @@ import subprocess
 import re
 import main
 
-def copy_files_to_arc_folder(file_paths):
-    # Get the root folder where the script is located
-    root_folder = os.getcwd()
+def copy_files_to_arc_folder(file_paths,root_folder):
 
     # Create the 'arc' folder in the root folder if it doesn't exist
     arc_folder_path = os.path.join(root_folder, 'arc_files')
