@@ -4,8 +4,8 @@ To install ARCXplore, follow these steps:
 
 1. Clone the GitHub repository:
    ```
-https://github.com/tmukh/ds2dc.git
-```
+   https://github.com/tmukh/ds2dc.git
+   ```
 
 2. Change to the cloned directory:
    ```
